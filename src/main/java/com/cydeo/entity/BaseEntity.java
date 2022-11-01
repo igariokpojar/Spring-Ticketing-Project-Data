@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // postgres will create Id for us
     private Long id;
     private LocalDateTime insertDateTime;
     private Long insertUserId;

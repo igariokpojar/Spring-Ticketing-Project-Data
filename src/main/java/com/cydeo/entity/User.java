@@ -20,12 +20,13 @@ public class User extends BaseEntity {
     private String passWord;
     private boolean enabled;
     private String phone;
-
-    @ManyToOne
-    private Role role;
-
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    @ManyToOne // many User can have the same Role but not opposite. Spring will create foreign keys
+    private Role role;
+
+
 
 
 }
