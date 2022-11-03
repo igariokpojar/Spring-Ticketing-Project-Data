@@ -43,7 +43,8 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public RoleDTO findById(Long id) {
         // get the ID and look in DB for it
-
+        // The RoleDto is coming from UI as a value 1,2,3,(inspect HTML for it) that's why we need converter from Object to RoleDTO
+        // get Entity convert to RoleDTO and give back  to RoleDTOConverter
         return roleMapper.convertToDto(roleRepository.findById(id).get());
 
     }

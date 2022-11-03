@@ -22,7 +22,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/create")
+    @GetMapping("/create") // localhost:8080 -> retrieve the form by @GetMapping
     public String createUser(Model model){
 
         model.addAttribute("user", new UserDTO());
@@ -32,14 +32,14 @@ public class UserController {
         return "/user/create";
 
     }
-
-    @PostMapping("/create")
-    public String insertUser(@Valid @ModelAttribute("user") UserDTO user, BindingResult bindingResult, Model model) {
+   // @Valid -> add this validation on the end of the project here in front of @Validation@ModelAttribute
+    @PostMapping("/create") // this method is going to post
+    public String insertUser(      @ModelAttribute("user") UserDTO user, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
 
-            model.addAttribute("roles", roleService.listAllRoles());
-            model.addAttribute("users", userService.listAllUsers());
+            model.addAttribute("roles", roleService.listAllRoles());// look in the UserService
+            model.addAttribute("users", userService.listAllUsers());// look in the UserService
 
             return "/user/create";
 
@@ -61,29 +61,29 @@ public class UserController {
         return "/user/update";
 
     }
-//
-//    @PostMapping("/update")
-//    public String updateUser(@Valid @ModelAttribute("user") UserDTO user, BindingResult bindingResult, Model model) {
-//
-//        if (bindingResult.hasErrors()) {
-//
-//            model.addAttribute("roles", roleService.findAll());
-//            model.addAttribute("users", userService.findAll());
-//
-//            return "/user/update";
-//
-//        }
-//
-//        userService.update(user);
-//
-//        return "redirect:/user/create";
-//
-//    }
-//
-//    @GetMapping("/delete/{username}")
-//    public String deleteUser(@PathVariable("username") String username) {
-//        userService.deleteById(username);
-//        return "redirect:/user/create";
-//    }
+
+    @PostMapping("/update")
+    public String updateUser(@Valid @ModelAttribute("user") UserDTO user, BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+
+            model.addAttribute("roles", roleService.listAllRoles());
+            model.addAttribute("users", userService.listAllUsers());
+
+            return "/user/update";
+
+        }
+
+        userService.update(user);
+
+        return "redirect:/user/create";
+
+    }
+
+    @GetMapping("/delete/{username}")
+    public String deleteUser(@PathVariable("username") String username) {
+        userService.deleteByUserName(username);
+        return "redirect:/user/create";
+    }
 
 }

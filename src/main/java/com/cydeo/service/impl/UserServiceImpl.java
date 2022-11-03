@@ -1,6 +1,5 @@
 package com.cydeo.service.impl;
 
-import com.cydeo.dto.RoleDTO;
 import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.User;
 import com.cydeo.mapper.UserMapper;
@@ -9,10 +8,12 @@ import com.cydeo.service.UserService;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -42,14 +43,34 @@ public class UserServiceImpl implements UserService {
         return userMapper.convertToDto(user);
     }
 
-    @Override
+    @Override // Save method is accepting Entity, but you are giving DTO coming from UI so need converter by using mapper
     public void save(UserDTO user) {
-        userRepository.save(userMapper.convertToEntity(user));
+        userRepository.save(userMapper.convertToEntity(user)); // for using mapper you need DI
 
     }
 
     @Override
     public void deleteByUserName(String username) {
+        userRepository.deleteByUserName(username);
+    }
+
+    @Override
+    public UserDTO update(UserDTO user) {
+
+        // Find the current User
+        // this is not updated one
+        User user1 = userRepository.findByUserName(user.getUserName()); // this has the id
+        // map update the UserDTO to entity object
+        User convertedUser = userMapper.convertToEntity(user);
+        // set id to the converted object
+        convertedUser.setId(user1.getId());
+        // save updated user in the DB
+        userRepository.save(convertedUser);
+        return findByUserName(user.getUserName());
 
     }
+
+
+
+
 }
