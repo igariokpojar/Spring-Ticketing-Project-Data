@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<User,Long> {
 
-    User findByUserName(String username);
+    User findByUserName(String username); // select * from user where is_deleted = false
 
     @Transactional // this annotation is for DERIVED QUERY , if we are using @Modifying we must use JPQL and NATIVE QUERY
    void deleteByUserName(String username); // these are derived queried

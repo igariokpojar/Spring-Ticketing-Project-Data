@@ -1,15 +1,12 @@
 package com.cydeo.dto;
 
 import com.cydeo.enums.Gender;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.Transient;
 import javax.validation.constraints.*;
 @Getter
-@Size
+@Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor

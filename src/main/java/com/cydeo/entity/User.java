@@ -15,9 +15,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
+//
 @Where(clause = "is_deleted=false")
 public class User extends BaseEntity {
 
+   // @Column(name = "firstname") // if we want to change in DB
     private String firstName;
     private String lastName;
     private String userName;
@@ -28,7 +30,7 @@ public class User extends BaseEntity {
     @ManyToOne
     private Role role;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) // we want the Enums to be In DB String (Female.Male)
     private Gender gender;
 
 

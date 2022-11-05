@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 @Table(name = "projects")
+// select * from user where is_deleted = false
 @Where(clause = "is_deleted=false")
 public class Project extends BaseEntity {
 
