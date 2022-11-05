@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
@@ -21,9 +18,32 @@ public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // postgres will create Id for us
     private Long id;
+
+    private Boolean isDeleted = false;
+
+
+    @Column(nullable = false,updatable = false)
     private LocalDateTime insertDateTime;
+    @Column(nullable = false,updatable = false)
     private Long insertUserId;
+    @Column(nullable = false)
     private LocalDateTime lastUpdateDateTime;
+    @Column(nullable = false)
     private Long lastUpdateUserId;
+
+    @PrePersist // when we are trying to save
+    private void onPrePersist(){ // I wrote this method to initialize the filed
+        this.insertDateTime = LocalDateTime.now();
+        this.lastUpdateDateTime = LocalDateTime.now();
+        this.insertUserId = 1L;
+        this.lastUpdateUserId = 1L;
+
+    }
+
+    @PreUpdate
+    private void onPreUpdate(){
+        this.lastUpdateDateTime = LocalDateTime.now();
+        this.lastUpdateUserId = 1L;
+    }
 
 }

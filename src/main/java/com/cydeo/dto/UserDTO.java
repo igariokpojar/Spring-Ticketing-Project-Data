@@ -2,15 +2,21 @@ package com.cydeo.dto;
 
 import com.cydeo.enums.Gender;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.persistence.Transient;
 import javax.validation.constraints.*;
-
+@Getter
+@Size
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
+
+
+    private Long id;
 
     @NotBlank
     @Size(max = 15, min = 2)

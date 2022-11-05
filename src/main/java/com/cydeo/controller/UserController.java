@@ -50,20 +50,22 @@ public class UserController {
         return "redirect:/user/create";
 
     }
-
-    @GetMapping("/update/{username}")
+    //  when ever I click on Update button I don't want to see any empty Object, I want to see Object populating what ever is chosen
+    @GetMapping("/update/{username}") // edit user
     public String editUser(@PathVariable("username") String username, Model model) {
 
-        model.addAttribute("user", userService.findByUserName(username));
+        model.addAttribute("user", userService.findByUserName(username)); // from Service
         model.addAttribute("roles", roleService.listAllRoles());
         model.addAttribute("users", userService.listAllUsers());
 
         return "/user/update";
 
     }
-
+    //@Valid
+    // when ever we Save the Updates Object this Update User method will execute(is going to post Update User in the UserList)
+    // go to UserService Interface and write the UPDATE method
     @PostMapping("/update")
-    public String updateUser(@Valid @ModelAttribute("user") UserDTO user, BindingResult bindingResult, Model model) {
+    public String updateUser(      @ModelAttribute("user") UserDTO user, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
 
@@ -82,8 +84,9 @@ public class UserController {
 
     @GetMapping("/delete/{username}")
     public String deleteUser(@PathVariable("username") String username) {
-        userService.deleteByUserName(username);
+        userService.delete(username);
         return "redirect:/user/create";
     }
+
 
 }

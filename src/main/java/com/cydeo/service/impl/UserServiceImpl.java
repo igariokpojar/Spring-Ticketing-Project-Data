@@ -51,17 +51,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteByUserName(String username) {
-        userRepository.deleteByUserName(username);
+        userRepository.deleteByUserName(username); // go to UserRepository and Implement the method
     }
 
     @Override
-    public UserDTO update(UserDTO user) {
-
-        // Find the current User
+    public UserDTO update(UserDTO user) { // this user is coming from UI
+        // To avoid duplicate id in DB use the steps
+        // Find the current User bc im going to use the ID of this User
         // this is not updated one
         User user1 = userRepository.findByUserName(user.getUserName()); // this has the id
         // map update the UserDTO to entity object
-        User convertedUser = userMapper.convertToEntity(user);
+        User convertedUser = userMapper.convertToEntity(user); // convert Entity to DTO
         // set id to the converted object
         convertedUser.setId(user1.getId());
         // save updated user in the DB
@@ -70,7 +70,24 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public void delete(String username) {
+        // go to DB and get the User with username
+        User user = userRepository.findByUserName(username);
+        // change isdeleted field to true
+        user.setIsDeleted(true);
+        // save the object in the DB
+        userRepository.save(user);
 
+    }
+
+    @Override
+    public List<UserDTO> listAllByRole(String role) {
+
+      List<User> users = userRepository.findByRoleDescriptionIgnoreCase(role);
+
+        return users.stream().map(userMapper::convertToDto).collect(Collectors.toList());
+    }
 
 
 }
