@@ -18,7 +18,7 @@ public class SpringTicketingProjectData {
     // Annotate this method with @Bean
 
     @Bean
-    public ModelMapper mapper(){
+    public ModelMapper mapper(){ // this is not our class that's why we put it here
         return new ModelMapper();
     }
 }
