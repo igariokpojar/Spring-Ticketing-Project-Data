@@ -77,7 +77,11 @@ public class ProjectServiceImpl implements ProjectService {
 
         Project project = projectRepository.findByProjectCode(code);
         project.setIsDeleted(true);
+
+        project.setProjectCode(project.getProjectCode() + "-" + project.getId());
         projectRepository.save(project);
+
+        taskService.deleteByProject(projectMapper.convertToDto(project));
     }
 
     @Override
@@ -86,6 +90,8 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findByProjectCode(projectCode);
         project.setProjectStatus(Status.COMPLETE);
         projectRepository.save(project);
+
+        taskService.completedByProject(projectMapper.convertToDto(project));
     }
 
     @Override
@@ -93,12 +99,12 @@ public class ProjectServiceImpl implements ProjectService {
 
         /*
         We can do it, but it is not a good practice to call some another repository from some Service.
-        For example it is ok to call UserRepository from UserServiceImpl.
+        For example, it is ok to call UserRepository from UserServiceImpl.
         Or it is ok to call ProjectRepository from ProjectServiceImpl.
         But it is not ok to call UserRepository from ProjectServiceImpl etc.
 
         It is because you will see in the microservices later, we will not be able to reach the UserRepository from ProjectServiceImpl at all.
-        Also we won't be able to reach the ProjectRepository from UserServiceImpl etc.
+        Also, we won't be able to reach the ProjectRepository from UserServiceImpl etc.
          */
 
         // hey DB give me all project assign to manager login in the system
@@ -122,5 +128,12 @@ public class ProjectServiceImpl implements ProjectService {
 
 
 
+    }
+
+    @Override
+    public List<ProjectDTO> listAllNonCompletedByAssignedManager(UserDTO assignedManager) {
+        List<Project> projects = projectRepository
+                .findAllByProjectStatusIsNotAndAssignedManager(Status.COMPLETE,userMapper.convertToEntity(assignedManager));
+        return projects.stream().map(projectMapper::convertToDto).collect(Collectors.toList());
     }
 }
