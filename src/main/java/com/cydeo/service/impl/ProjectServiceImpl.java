@@ -91,6 +91,16 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ProjectDTO> listAllProjectDetails() {
 
+        /*
+        We can do it, but it is not a good practice to call some another repository from some Service.
+        For example it is ok to call UserRepository from UserServiceImpl.
+        Or it is ok to call ProjectRepository from ProjectServiceImpl.
+        But it is not ok to call UserRepository from ProjectServiceImpl etc.
+
+        It is because you will see in the microservices later, we will not be able to reach the UserRepository from ProjectServiceImpl at all.
+        Also we won't be able to reach the ProjectRepository from UserServiceImpl etc.
+         */
+
         // hey DB give me all project assign to manager login in the system
         // from  UI is coming DTO
         UserDTO currentUserDTO = userService.findByUserName("harold@manager.com");
