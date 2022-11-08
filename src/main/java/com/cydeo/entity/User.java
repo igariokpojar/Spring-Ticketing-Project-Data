@@ -21,7 +21,10 @@ public class User extends BaseEntity {
    // @Column(name = "firstname") // if we want to change in DB
     private String firstName;
     private String lastName;
+
+    @Column(unique = true)
     private String userName;
+
     private String passWord;
     private boolean enabled;
     private String phone;
