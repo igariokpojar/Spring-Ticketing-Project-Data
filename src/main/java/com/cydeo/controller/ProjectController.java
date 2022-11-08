@@ -15,7 +15,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/project")
 public class ProjectController {
-
     private final UserService userService;
     private final ProjectService projectService;
 
@@ -29,19 +28,19 @@ public class ProjectController {
 
         model.addAttribute("project", new ProjectDTO());
         model.addAttribute("managers", userService.listAllByRole("manager"));
-        model.addAttribute("projects", projectService.listAllProjects());
+        model.addAttribute("projects", projectService.listAllProjectDetails());
 
         return "/project/create";
 
     }
 
     @PostMapping("/create")
-    public String insertProject(@ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model) {
+    public String insertProject(@Valid @ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
 
             model.addAttribute("managers", userService.listAllByRole("manager"));
-            model.addAttribute("projects", projectService.listAllProjects());
+            model.addAttribute("projects", projectService.listAllProjectDetails());
 
             return "/project/create";
 
@@ -70,7 +69,7 @@ public class ProjectController {
 
         model.addAttribute("project", projectService.getByProjectCode(projectCode));
         model.addAttribute("managers", userService.listAllByRole("manager"));
-        model.addAttribute("projects", projectService.listAllProjects());
+        model.addAttribute("projects", projectService.listAllProjectDetails());
 
         return "/project/update";
 
@@ -82,7 +81,7 @@ public class ProjectController {
         if (bindingResult.hasErrors()) {
 
             model.addAttribute("managers", userService.listAllByRole("manager"));
-            model.addAttribute("projects", projectService.listAllProjects());
+            model.addAttribute("projects", projectService.listAllProjectDetails());
 
             return "/project/update";
 
@@ -96,7 +95,6 @@ public class ProjectController {
 
     @GetMapping("/manager/project-status")
     public String getProjectByManager(Model model) {
-
 
         List<ProjectDTO> projects = projectService.listAllProjectDetails();
 
@@ -113,3 +111,4 @@ public class ProjectController {
     }
 
 }
+

@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     // go to Db bring all users and convert it
         // to bring info from DB we need repository so need DI
 
-      List<User> userList  =  userRepository.findAll(Sort.by("firstName"));
+      List<User> userList  =  userRepository.findAllByIsDeletedOrderByFirstNameDesc(false); // I want isDeleting field to be False if you are returning all the Users
         // convert to DTO and returned
         return userList.stream().map(userMapper::convertToDto).collect(Collectors.toList());
 
@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO findByUserName(String username) {
 
-       User user = userRepository.findByUserName(username);
+       User user = userRepository.findByUserNameAndIsDeleted(username,false); // give me all the NonDeleted Users
         return userMapper.convertToDto(user);
     }
 
@@ -59,17 +59,17 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    @Override
-    public void deleteByUserName(String username) {
-        userRepository.deleteByUserName(username); // go to UserRepository and Implement the method
-    }
+//    @Override
+//    public void deleteByUserName(String username) {
+//        userRepository.deleteByUserName(username); // go to UserRepository and Implement the method
+//    }
 
     @Override
     public UserDTO update(UserDTO user) { // this user is coming from UI
         // To avoid duplicate id in DB use the steps
         // Find the current User bc im going to use the ID of this User
         // this is not updated one
-        User user1 = userRepository.findByUserName(user.getUserName()); // this has the id
+        User user1 = userRepository.findByUserNameAndIsDeleted(user.getUserName(),false); // this has the id
         // map update the UserDTO to entity object
         User convertedUser = userMapper.convertToEntity(user); // convert Entity to DTO
         // set id to the converted object
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(String username) {
         // go to DB and get the User with username
-        User user = userRepository.findByUserName(username);
+        User user = userRepository.findByUserNameAndIsDeleted(username,false);
 
         if (checkIfUserCanBeDeleted(user)) {
 
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDTO> listAllByRole(String role) {
 
-      List<User> users = userRepository.findByRoleDescriptionIgnoreCase(role);
+      List<User> users = userRepository.findByRoleDescriptionIgnoreCaseAndIsDeleted(role,false);
 
         return users.stream().map(userMapper::convertToDto).collect(Collectors.toList());
     }

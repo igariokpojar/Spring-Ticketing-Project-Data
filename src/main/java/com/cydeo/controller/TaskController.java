@@ -15,6 +15,7 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/task")
 public class TaskController {
+
     private final UserService userService;
     private final ProjectService projectService;
     private final TaskService taskService;
@@ -38,7 +39,7 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String insertTask(@ModelAttribute("task") TaskDTO task, BindingResult bindingResult, Model model) {
+    public String insertTask(@Valid @ModelAttribute("task") TaskDTO task, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
 
@@ -75,7 +76,7 @@ public class TaskController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateTask(@ModelAttribute("task") TaskDTO task, BindingResult bindingResult, Model model) {
+    public String updateTask(@Valid @ModelAttribute("task") TaskDTO task, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
 
@@ -86,7 +87,6 @@ public class TaskController {
             return "/task/update";
 
         }
-
 
         taskService.update(task);
 
@@ -110,8 +110,6 @@ public class TaskController {
     public String employeeEditTask(@PathVariable Long id, Model model) {
 
         model.addAttribute("task", taskService.findById(id));
-//        model.addAttribute("projects", projectService.findAll());
-//        model.addAttribute("employees", userService.findEmployees());
         model.addAttribute("statuses", Status.values());
         model.addAttribute("tasks", taskService.listAllTasksByStatusIsNot(Status.COMPLETE));
 
