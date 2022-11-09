@@ -1,0 +1,28 @@
+Hi guys, here is a list of the errors that we encountered for the MVC section of the ticketing app...
+
+Ticketing Project MVC Section
+
+
+
+1. When creating a project project from the view we are selecting a manager from a drop down and returning the username.
+The project DTO requires a user object not name. This caused a TYPEMISMATCH.
+ The solution was to create a converter class by implementing the converter interface and overriding the convert method.
+ In this method we called the findByUsername method and passed the String we received from the view and returned a userDTO object that was required by the field in project.
+
+
+
+2. Failed to convert type to type ( String-> enum) ILLEGAL ARGUMENT EXCEPTION.
+ We passed th:value ="Male" and thymeleaf was trying to match with enum constants which are all uppercase.
+  We solved this by changing the th:value="MALE" <- This is the constant .
+
+
+
+3. TemplateInputException – SpellEvaluationException - value cannot be found on null.
+ When creating objects from the view any field of the object that is not in the view cannot be set or if it was previously set it is lost when being transferred with model attribute.
+ This requires us to set fields that haven't been set or get previously set values belonging to our object from the DB.
+
+
+
+4. ConversionFailException [ Java.lang.String] to @Javaz.validation.constraints.notNull for RoleDTO] In our drop down menu we had the select field  <option th:value='""' th:text="Select></option> This is not a valid option but we cannot disable it in the drop down.
+If someone were to select this we will be returned an empty string.
+ To accommodate this input we need to handle this in the converter by adding if (source==null ||source.equals("") return null; This allows us to present to the user a known exception since we have validation for role cannot be null in the DTO ex: Please select a role.
