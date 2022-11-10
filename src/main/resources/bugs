@@ -1,0 +1,76 @@
+	Ticketing Project  DATA
+
+	1. Field cannot be found null – description – There was no implementation for findByUsername in serviceImplementation.
+	 Created the implementation by calling the repository method save function.
+
+	2. NoUniqueResultException – query did not return a unique result. When updating a user it created a duplicate in the database,
+	 and also threw this error. This is because we didn't set the entity id (Primary Key) when saving it back to the database.
+	 Since it wasn't set Spring automatically created a new Id (Primary Key) for the object we were updating.
+
+	3. Javax.persistence.TransactionRequiredException: No EntityManager with actual transaction available for current thread.
+	 When calling the deleteByUserName in the repository we were using a derived query that alters our database,
+	 i.e. transaction (Also true for Insert & update )  To solve this we needed to add @Transactional.
+	 This facilitates a rollback through an interception (try catch) if the transaction encounters an error when executing,
+	 otherwise it  persists changes (Commits).
+
+	4. TransientPropertyValueException: object references an unsaved transient instance- save the instance before flushing
+	AssignedManager -> entity.User. The problem was that the foreign key was null for the
+	Assigned manager  so we couldn't map the project table to user table. We created a project in the UI and got the DTO
+	 for the project and mapped the project to a project entity, when mapping the UserDTO  for assigned manager to a user entity
+	 the ID  was assigned null since there was no ID field in the DTO to match. To solve this error, we can create the id field
+	 for the UserDTO so that modelMapper is able to map between the UserDTO and user.
+
+
+	5. Problem: Circular reference error. Our DTO Converter classes had a circular reference due to bean creation and
+	DI - To break the circle we put @Lazy annotation in the constructor so that the injection of the bean will only occur in the
+	class when it is called upon.
+
+
+
+	Ticketing project BUGs w/ Cundullah
+
+	6. After a project is SOFT deleted it shouldn't keep the same project code so we can reuse project codes.
+	 We can solve this issue by changing the project code upon soft deletion.
+		Project.setProjectCode(project.getProjectCode()+"-"+project.getId();
+
+	7. When a project is deleted the tasks should also be deleted. To do this we created a method in tasks service to delete the
+	tasks by project and called that method in project service when deleting a project. This also goes for the user.
+
+	8. When a project is marked as complete, the tasks should also be marked as complete. To do this we created a
+	completeByProject method in tasks services and called the method in project services complete method.
+
+	9. We had two methods for update since managers shouldn't be able to update the status of a task, inadvertently
+	they do when completing a project so we added
+		if(task.isPresent()){
+		updatedTask.setAssignedDate(task.get().getAssignedDate());
+		updatedTask.setTaskStatus(
+		taskDTO.getTaskStatus()==null?task.get().getTaskStatus():taskDTO.getTaskStatus());
+		}
+	Because we added this, we no longer need to have a separate method for the employee and manager to update a task. This condition can handle when the manager updates tasks and the task.status is null ( since the field isn't present in the view), and also when the employee updates the status and sends the new status with the DTO.
+
+	10. You should not be able to delete a manager/user that has uncompleted projects/task. Even though the manager/user
+	 is softDeleted our @Where(clause="is_deleted=false") will prevent any of his uncompleted projects from showing.
+	  To solve this we first created a PRIVATE method which returns a boolean to check if the user can be deleted.
+	  To determine this, the method checks to see:
+			What type of user, employee or manager and based on that we check to see if they have either any uncompleted
+			projects(ProjectServiceImpl)  or uncompleted tasks(taskServiceImpl).
+	We then call this method in our delete method and only delete if this method returns true.
+
+When doing this we got a circular reference between projectServiceImpl and userServiceImpl because they both had each others
+interfaces injected in their service classes, so we added @Lazy to the constructor to only create the bean for these two
+classes when the methods that call them require it.
+
+	11. If a employee has completed all their tasks, and is therefore able to be deleted. When we go to try and mark the
+	project that said user worked on as complete we get a Error mapping task to taskDTO , EntityNotFoundExveption .
+	 This is because when we mark the user as deleted the @Where(clause="is_deleted=false") is applied the SQL query
+	  related to any user search. To solve this we needed to remove the @Where from User and create our own derived
+	  queries to exclude deleted users when necessary by passing a Boolean.
+	   EX: User findByUserNameAndIsDeleted(String userName, Boolean deleted);
+
+	12. We updated our Admin page so that the managers are able to see their own projects,
+	we did this by changing listAllProjects to listAllProjectDetails, which already filtered by the specified manager.
+
+In project Create & project Update HTML We added th: if="${project.projectStatus.value!='Completed'}"
+update button should only be able to be viewed if the project isn't complete. We also added this to the
+complete button, once it is completed you shouldn't be able to mark it as complete again.  We also added this condition for task
+ update.HTML since once the employee completes the task, the manager shouldn't be able to update it
