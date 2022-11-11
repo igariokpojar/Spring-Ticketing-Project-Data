@@ -29,7 +29,7 @@ public class User extends BaseEntity {
     private boolean enabled;
     private String phone;
 
-    @ManyToOne
+    @ManyToOne // Create foreign key where / in the User Table why? bc many Users can have the same Role
     private Role role;
 
     @Enumerated(EnumType.STRING) // we want the Enums to be In DB String (Female.Male)

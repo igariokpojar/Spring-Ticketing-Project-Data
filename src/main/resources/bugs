@@ -1,7 +1,8 @@
 	Ticketing Project  DATA
 
-	1. Field cannot be found null – description – There was no implementation for findByUsername in serviceImplementation.
-	 Created the implementation by calling the repository method save function.
+	1. Field cannot be found null – description – There was no implementation for findByUsername on UserServiceImpl or (findById) in RoleServiceImplementation.
+	 Created the implementation by calling the repository method save function. From HTML the the Roles is understand as as 1,2,3 but not Admin,Manager or Employee.
+	 If we go to UserDTO we have private RoleDTO ,we need to provide Object not String so Converter will String to ObjectDTO, then GO to DB by findByID()is going to give us that Object
 
 	2. NoUniqueResultException – query did not return a unique result. When updating a user it created a duplicate in the database,
 	 and also threw this error. This is because we didn't set the entity id (Primary Key) when saving it back to the database.

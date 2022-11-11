@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Service
 public class RoleServiceImpl implements RoleService {
 
-    private final RoleRepository roleRepository;
+    private final RoleRepository roleRepository; // we need to get the Roles from DB, so we are injected Repository
     private final RoleMapper roleMapper;
 
     private final MapperUtil mapperUtil;
@@ -30,10 +30,10 @@ public class RoleServiceImpl implements RoleService {
     public List<RoleDTO> listAllRoles() {
     // Controller called me and requesting all RoleDto, so it can show in the drop-down in the UI
         // I need to make a call to Db and get all the roles from table
-        // go to repository and find a service which gives me rhe roles fromDB
+        // go to repository and find a service(method) which gives me the roles fromDB
         // how I will cal any service here? = DI(dep inj)
 
-       List<Role>roleList = roleRepository.findAll();
+       List<Role>roleList = roleRepository.findAll(); // execute Role table witch is in  Role Entity
 
   // I have Role entities from DB
         // I need to convert this Role entities to DTOs
@@ -51,7 +51,7 @@ public class RoleServiceImpl implements RoleService {
         // get the ID and look in DB for it
         // The RoleDto is coming from UI as a value 1,2,3,(inspect HTML for it) that's why we need converter from Object to RoleDTO
         // get Entity convert to RoleDTO and give back  to RoleDTOConverter
-        return roleMapper.convertToDto(roleRepository.findById(id).get());
+        return roleMapper.convertToDto(roleRepository.findById(id).get()); // .get() is return Optional
 
     }
 }

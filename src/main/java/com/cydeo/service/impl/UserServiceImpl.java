@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserRepository userRepository; // before to use Repository we must inject it
     private final UserMapper userMapper;
 
     private final ProjectService projectService;
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.convertToDto(user);
     }
 
-    @Override // Save method is accepting Entity, but you are giving DTO coming from UI so need converter by using mapper
+    @Override // Save method is accepting Entity, but you are giving DTO coming from UI so need converter by using: userMapper
     public void save(UserDTO user) {
         userRepository.save(userMapper.convertToEntity(user)); // for using mapper you need DI
 
