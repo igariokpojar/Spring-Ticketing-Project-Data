@@ -1,0 +1,22 @@
+1. Tell them what your application is doing.
+        a. Ex: Show the functionality through the website. Good to start at the login
+        b. While showing the website pages you can explain some business logic
+            i. Ex: not being able to complete a project with unfinished tasks.
+    2. Then explain the architecture we used.
+        a. SpringBoot
+        b. Hibernate, JPA and Postgres
+        c. MVC for our controllers
+            i. Model objects in the controllers, we are using DTO for those models
+            ii. View
+            iii. How we are sending the views and model  is through the controller
+            iv. Explain the annotation in the controller and explain what end points you are trying to get to.
+            (If not asked further questions don't go into too much detail)
+        d. Database:  Spring Data, postgresSQL, hibernate Jpa and Spring ORM structure
+            i. Entities
+            ii. Tables
+        e. Services package-> interface-> impl
+        f. Mapper if anyone asks
+        g. Using Enum for constant values
+        h. For queries we are using JPA repository
+        i. If no one asks about the converter you don't need to mention it
+You need to explain the config package.( More will be added with security)
